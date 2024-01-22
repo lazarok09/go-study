@@ -1,1 +1,1 @@
-# study-golang
+# Made to study golang 💙
