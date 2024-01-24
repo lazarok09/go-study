@@ -6,5 +6,6 @@ import (
 
 // Registra uma mensagem via STDOUT
 func Escrever(texto string) {
-	fmt.Println(texto)
+	fmt.Println(translateToEnglish(texto))
+
 }
