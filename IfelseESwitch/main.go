@@ -34,5 +34,10 @@ func main() {
 		}
 
 	}
+	numeroPrimo := 9
 
+	if divisorDe9 := numeroPrimo; divisorDe9%3 == 0 {
+		// numero primo confirmado
+		fmt.Println("Yes!")
+	}
 }
