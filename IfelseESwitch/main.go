@@ -4,6 +4,15 @@ import (
 	"fmt"
 )
 
+func checkForPSDB(partido string) bool {
+	switch {
+	case partido == "PSDB":
+		return true
+	default:
+		return false
+	}
+}
+
 func main() {
 	fmt.Println((""))
 
@@ -17,10 +26,11 @@ func main() {
 
 	for i := 0; i < len(partidos); i++ {
 		if pessol := partidos[i]; pessol == "PSL" {
-			fmt.Printf("Nosso candidato é do PSOL %s", pessol)
-			fmt.Println(" ")
-		} else {
-			fmt.Println("Não encontrado")
+			fmt.Printf("Nosso candidato é do %s\n", pessol)
+
+		} else if checkForPSDB(partidos[i]) {
+
+			fmt.Printf("Encontrado um candidato do %s\n", partidos[i])
 		}
 
 	}
