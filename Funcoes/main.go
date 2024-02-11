@@ -12,6 +12,12 @@ func calculoSomaESub(a, b int8) (int8, int8) {
 	return sum, sub
 }
 
+func sumAndSub(a, b int8) (sum int8, sub int8) {
+	sum = a + b
+	sub = a - b
+	return
+}
+
 func main() {
 
 	var funcCallBack = func() (int8, int8) {
@@ -27,4 +33,5 @@ func main() {
 
 	fmt.Println(funcCallBack())
 	fmt.Println(subtrair(5, 2))
+	fmt.Println(sumAndSub(5, 2))
 }
