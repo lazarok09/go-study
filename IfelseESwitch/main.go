@@ -40,4 +40,17 @@ func main() {
 		// numero primo confirmado
 		fmt.Println("Yes!")
 	}
+
+	number := 2
+	var value int
+	switch number {
+	case 1:
+		value = 1
+	case 2:
+		value = 2
+		fallthrough
+	case 3:
+		value = 3
+	}
+	fmt.Println(value)
 }
