@@ -19,7 +19,9 @@ func (u user) spellLetters() []string {
 	}
 	return letters
 }
-
+func (u *user) setAge(age uint8) {
+	u.age = age
+}
 func (u user) isOld() bool {
 	return u.age > 40
 
@@ -34,5 +36,7 @@ func main() {
 	fmt.Printf("Is %s old ? %t \n", argentino.name, argentino.isOld())
 	fmt.Println(argentino.spellLetters())
 	fmt.Println(argentino)
-
+	argentino.setAge(32)
+	fmt.Println(argentino)
+	fmt.Printf("Is %s old now ? %t \n", argentino.name, argentino.isOld())
 }
