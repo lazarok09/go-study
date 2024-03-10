@@ -11,16 +11,33 @@ import (
 
 func App() {
 	app := &cli.App{
-		Action: SearchIPbyHost,
-		Name:   "ip",
-		Flags: []cli.Flag{
-			&cli.StringFlag{
-				Name:  "host",
-				Usage: "A DNS server to be lookedup ex: amazon.com",
-				Value: "github.com",
+		Commands: []cli.Command{
+			{
+				Action: searchIPbyHost,
+				Name:   "ip",
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:  "host",
+						Usage: "A DNS server to be lookedup ex: amazon.com",
+						Value: "github.com",
+					},
+				},
+				Usage: "Make network ip's search using the host",
+			},
+			{
+				Action: searchServers,
+				Name:   "server",
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:     "host",
+						Usage:    "Send the DNS to be looked the servers ex: amazon.com",
+						Value:    "github.com",
+						Required: true,
+					},
+				},
+				Usage: "Make server network search using the DNS",
 			},
 		},
-		Usage: "Make network searchs using net package",
 	}
 
 	if error := app.Run(os.Args); error != nil {
@@ -28,7 +45,7 @@ func App() {
 	}
 }
 
-func SearchIPbyHost(cCtx *cli.Context) error {
+func searchIPbyHost(cCtx *cli.Context) error {
 	host := cCtx.String("host")
 	results, error := net.LookupHost(host)
 
@@ -43,6 +60,28 @@ func SearchIPbyHost(cCtx *cli.Context) error {
 	for _, ip := range results {
 		fmt.Println(ip)
 		fmt.Println(ip)
+	}
+	// print the host looked
+	fmt.Printf("At host %s", host)
+
+	return nil
+}
+
+func searchServers(cCtx *cli.Context) error {
+	host := cCtx.String("host")
+	results, error := net.LookupNS(host)
+
+	if error != nil {
+		fmt.Println(host)
+		log.Fatal(error)
+	}
+
+	fmt.Printf("Success search of %d DNS counts \n", len(results))
+
+	// print all ips
+	for _, ip := range results {
+
+		fmt.Println(ip.Host)
 	}
 	// print the host looked
 	fmt.Printf("At host %s", host)
