@@ -14,6 +14,9 @@ type SquareFormula interface {
 func writeArea(formula SquareFormula) {
 	fmt.Println(formula.area())
 }
+func genericFunc(unknownStuff interface{}) {
+	fmt.Println(unknownStuff)
+}
 
 // como se cria um método ?
 
@@ -28,5 +31,7 @@ func main() {
 
 	box := Square{width: 50, height: 50}
 	writeArea(box)
-
+	genericFunc(1)
+	genericFunc("Balao")
+	genericFunc(float32(2912012))
 }
