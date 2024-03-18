@@ -2,6 +2,7 @@ package channels
 
 import (
 	"fmt"
+	"sync"
 	"time"
 )
 
@@ -23,23 +24,26 @@ func Channel() {
 	// but the for is more clean code accurate cause checks for open/closed
 
 	// first of all we start the algorith with a go routine
-	lettersChannel := make(chan string)
+	lettersStream := make(chan string)
 
 	fmt.Println("The begining of the program")
-	go writeLetters(lettersChannel)
+	go writeLetters(lettersStream)
 
 	// now we need to wait for the channel receive a message
 	// just wait for the channel will not give time enough to do all operations
 	// so we need to loop over the items too.
 
 	for {
-		message, isOpen := <-lettersChannel
+		message, isOpen := <-lettersStream
 		if !isOpen {
 			break
 		}
 		fmt.Println(message)
 	}
-
+	waitGroup := sync.WaitGroup{}
+	waitGroup.Add(1)
+	waitGroup.Done()
+	waitGroup.Wait()
 	// but if the code above just do a for in a channel algorithm then there will be a time
 	// where the channel is not anymore waiting for nothing and we still in the for.
 	// so we need to close the channel by the end of the go routine.
