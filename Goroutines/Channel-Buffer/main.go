@@ -4,7 +4,7 @@ import "fmt"
 
 func main() {
 	// make a channel
-	messagesStream := make(chan string)
+	messagesStream := make(chan string, 2)
 	messagesStream <- "Hello"
 	messagesStream <- "Wolrd"
 
