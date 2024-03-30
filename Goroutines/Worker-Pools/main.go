@@ -20,6 +20,8 @@ func main() {
 	// after all our code is done
 
 	go worker(taskStream, resultStream)
+	go worker(taskStream, resultStream)
+	go worker(taskStream, resultStream)
 
 	position := 40
 	fmt.Println("All fibonnaci numbers in the position", position)
