@@ -1,0 +1,4 @@
+mode: set
+lazarok09/testes/address/address.go:10.46,16.41 2 1
+lazarok09/testes/address/address.go:16.41,18.3 1 1
+lazarok09/testes/address/address.go:18.8,20.3 1 1
