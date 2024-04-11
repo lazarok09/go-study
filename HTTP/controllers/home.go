@@ -11,7 +11,7 @@ type CustomResponse struct {
 	Id      int    `json:"id"`
 }
 
-func HomeController(w http.ResponseWriter, r *http.Request) {
+func Home(w http.ResponseWriter, r *http.Request) {
 	clientResponse := CustomResponse{Message: "Olá lázaro, parabéns por continuar com golang apesar do seu sono.", Id: 1}
 
 	data, error := json.Marshal(clientResponse)
