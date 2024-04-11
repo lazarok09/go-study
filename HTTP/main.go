@@ -19,7 +19,7 @@ func main() {
 		data, error := json.Marshal(clientResponse)
 
 		if error != nil {
-			w.Write([]byte("An exception occured"))
+			w.Write([]byte("An exception occurred"))
 		}
 
 		w.Write(data)
