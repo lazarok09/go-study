@@ -1,24 +1,27 @@
 package controllers
 
 import (
-	"encoding/json"
-
 	"net/http"
+	"text/template"
 )
 
-type CustomResponse struct {
-	Message string `json:"message"`
-	Id      int    `json:"id"`
+var templates *template.Template
+
+type User struct {
+	Name string
+	Age  int
+}
+type MetaData struct {
+	Title       string
+	Description string
+	User        User
 }
 
 func Home(w http.ResponseWriter, r *http.Request) {
-	clientResponse := CustomResponse{Message: "Olá lázaro, parabéns por continuar com golang apesar do seu sono.", Id: 1}
+	templates = template.Must(template.ParseGlob("views/*.html"))
+	meta := MetaData{Title: "Welcome to my page",
+		Description: "People used to say that feelings are not the best indicative of our wareness",
+		User:        User{Name: "Lázaro Souza", Age: 24}}
 
-	data, error := json.Marshal(clientResponse)
-
-	if error != nil {
-		w.Write([]byte("An exception occurred"))
-	}
-
-	w.Write(data)
+	templates.ExecuteTemplate(w, "index.html", meta)
 }
