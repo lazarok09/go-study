@@ -1,0 +1,35 @@
+version: "3.1"
+
+services:
+  db:
+    image: mysql:8.2
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: lazarok09
+      MYSQL_DATABASE: devbook
+      MYSQL_USER: lazarok09
+      MYSQL_PASSWORD: lazarok09
+    ports:
+      - 3306:3306
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - mynet
+
+  app:
+    build: .
+    restart: always
+    ports:
+      - 6000:6000
+    depends_on:
+      - db
+    networks:
+      - mynet
+volumes:
+  db-data:
+networks:
+  mynet:
+    driver: "bridge"
