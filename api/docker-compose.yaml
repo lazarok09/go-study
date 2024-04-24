@@ -19,15 +19,15 @@ services:
     networks:
       - mynet
 
-  app:
-    build: .
-    restart: always
-    ports:
-      - 6000:6000
-    depends_on:
-      - db
-    networks:
-      - mynet
+  # app:
+  #   build: .
+  #   restart: always
+  #   ports:
+  #     - 6000:6000
+  #   depends_on:
+  #     - db
+  #   networks:
+  #     - mynet
 volumes:
   db-data:
 networks:
