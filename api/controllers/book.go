@@ -37,7 +37,14 @@ func CreateBook(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("An error ocurred when parsing the message"))
 	}
 
-	resultOfInsertOperation, err := connection.Exec("INSERT INTO Book (name) VALUES (?)", book.Name)
+	statment, err := connection.Prepare("INSERT INTO Book (name) VALUES (?)")
+
+	if err != nil {
+		w.Write([]byte("An error ocurred when creating the SQL statment"))
+	}
+	defer statment.Close()
+
+	resultOfInsertOperation, err := statment.Exec(book.Name)
 
 	if err != nil {
 		w.Write([]byte("An error ocurred when creating a book"))
@@ -59,7 +66,7 @@ func CreateBook(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("An error ocurred when getting the final response"))
 
 	}
-
+	w.WriteHeader(http.StatusCreated)
 	w.Write(finalResponse)
 }
 func GetBook(w http.ResponseWriter, r *http.Request) {
