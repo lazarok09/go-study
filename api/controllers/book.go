@@ -4,9 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"strconv"
 
 	"net/http"
 
+	"github.com/gorilla/mux"
 	"github.com/lazarok09/treinandosql/database"
 )
 
@@ -121,10 +123,12 @@ func GetBook(w http.ResponseWriter, r *http.Request) {
 	}
 	defer connection.Close()
 
-	paramName := "id"
-	bookId := "12"
+	params := mux.Vars(r)
 
-	if len(bookId) < 1 {
+	paramName := "id"
+	bookId, err := strconv.ParseUint(params[paramName], 10, 32)
+
+	if err != nil {
 		ThrowParamMissing(w, paramName)
 		return
 	}
