@@ -2,7 +2,9 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
+
 	"net/http"
 
 	"github.com/lazarok09/treinandosql/database"
@@ -17,6 +19,11 @@ type BookResponse struct {
 type Book struct {
 	Name string `json:"name"`
 	ID   int    `json:"id"`
+}
+type ResponseErrorShape struct {
+	Message string
+	Error   string
+	Status  int
 }
 
 func CreateBook(w http.ResponseWriter, r *http.Request) {
@@ -55,10 +62,6 @@ func CreateBook(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("An error ocurred when getting rows affected"))
 	}
 
-	if err != nil {
-		w.Write([]byte("An error ocurred when getting the final message"))
-
-	}
 	response := BookResponse{Response: bookIdResult}
 
 	finalResponse, err := json.Marshal(response)
@@ -69,7 +72,7 @@ func CreateBook(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	w.Write(finalResponse)
 }
-func GetBook(w http.ResponseWriter, r *http.Request) {
+func GetBooks(w http.ResponseWriter, r *http.Request) {
 	connection, err := database.Connect()
 	if err != nil {
 		w.Write([]byte("An error ocurred when connecting the database"))
@@ -88,10 +91,12 @@ func GetBook(w http.ResponseWriter, r *http.Request) {
 
 	for rows.Next() {
 		var book Book
-		if err := rows.Scan(
+		err := rows.Scan(
 			&book.ID,
 			&book.Name,
-		); err != nil {
+		)
+
+		if err != nil {
 			w.Write([]byte("An error ocurred when scaning books"))
 
 		}
@@ -107,4 +112,65 @@ func GetBook(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Write(finalResponse)
+}
+func GetBook(w http.ResponseWriter, r *http.Request) {
+	connection, err := database.Connect()
+	if err != nil {
+		ThrowDBConnectionError(w, err)
+		return
+	}
+	defer connection.Close()
+
+	paramName := "id"
+	bookId := "12"
+
+	if len(bookId) < 1 {
+		ThrowParamMissing(w, paramName)
+		return
+	}
+
+	var book Book
+	queryRowError := connection.QueryRow("SELECT * FROM Book WHERE id = ?", bookId).Scan(&book.ID, &book.Name)
+	if queryRowError != nil {
+		status := http.StatusInternalServerError
+		w.WriteHeader(status)
+		response := ResponseErrorShape{Message: "An error occurred when scanning book value to the struct", Error: queryRowError.Error(), Status: status}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	json.NewEncoder(w).Encode(book)
+}
+
+func ThrowParamMissing(w http.ResponseWriter, param string) {
+	status := http.StatusUnprocessableEntity
+	message := fmt.Sprintf("Missing the %s param", param)
+
+	responseShape := ResponseErrorShape{Message: message, Error: "", Status: status}
+
+	responseJSON, _ := json.Marshal(responseShape)
+
+	w.WriteHeader(status)
+	w.Write(responseJSON)
+	panic(message)
+}
+func ThrowDBConnectionError(w http.ResponseWriter, err error) {
+	status := http.StatusInternalServerError
+
+	responseShape := ResponseErrorShape{Message: "Seems like we're facing issues connecting the database.", Error: err.Error(), Status: status}
+
+	responseJSON, _ := json.Marshal(responseShape)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	w.WriteHeader(status)
+	w.Write(responseJSON)
+	panic(err)
+}
+
+// a function that receives name as being what you wanted to database prepare
+func ThrowAStatmentIssue(name string) {
+	message := fmt.Sprintf("An issue ocurred when you tried to: %s ", name)
+	panic(message)
 }

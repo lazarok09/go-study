@@ -12,7 +12,8 @@ import (
 func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/book", controllers.CreateBook).Methods(http.MethodPost)
-	router.HandleFunc("/book", controllers.GetBook).Methods(http.MethodGet)
+	router.HandleFunc("/book", controllers.GetBooks).Methods(http.MethodGet)
+	router.HandleFunc("/book/{id}", controllers.GetBook).Methods(http.MethodGet)
 
 	fmt.Println("Server listening at port 6000")
 
