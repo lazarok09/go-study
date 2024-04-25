@@ -116,12 +116,6 @@ func GetBooks(w http.ResponseWriter, r *http.Request) {
 	w.Write(finalResponse)
 }
 func GetBook(w http.ResponseWriter, r *http.Request) {
-	connection, err := database.Connect()
-	if err != nil {
-		ThrowDBConnectionError(w, err)
-		return
-	}
-	defer connection.Close()
 
 	params := mux.Vars(r)
 
@@ -132,6 +126,13 @@ func GetBook(w http.ResponseWriter, r *http.Request) {
 		ThrowParamMissing(w, paramName)
 		return
 	}
+
+	connection, err := database.Connect()
+	if err != nil {
+		ThrowDBConnectionError(w, err)
+		return
+	}
+	defer connection.Close()
 
 	var book Book
 	queryRowError := connection.QueryRow("SELECT * FROM Book WHERE id = ?", bookId).Scan(&book.ID, &book.Name)
