@@ -191,6 +191,7 @@ func UpdateBook(w http.ResponseWriter, r *http.Request) {
 
 	}
 	e, err := statment.Exec(requestBodyBook.Name, bookId)
+	defer statment.Close()
 
 	if err != nil {
 		fmt.Println(e)
@@ -205,4 +206,37 @@ func UpdateBook(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(responseBook)
+}
+
+func DeleteBook(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+
+	paramName := "id"
+	bookId, err := strconv.ParseUint(params[paramName], 10, 32)
+
+	if err != nil {
+		helpers.ThrowParamMissing(w, paramName)
+		return
+	}
+
+	connection, err := database.Connect()
+	if err != nil {
+		helpers.ThrowDBConnectionError(w, err)
+		return
+	}
+	defer connection.Close()
+	statment, err := connection.Prepare("DELETE FROM Book WHERE id = ?")
+	if err != nil {
+		helpers.ThrowAStatmentIssue(w, err.Error())
+		return
+	}
+	defer statment.Close()
+
+	if _, err := statment.Exec(bookId); err != nil {
+		helpers.ThrowAStatmentIssue(w, err.Error())
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+
 }
