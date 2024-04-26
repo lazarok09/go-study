@@ -3,6 +3,7 @@ package controllers
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 
 	"io"
 	"strconv"
@@ -166,8 +167,8 @@ func UpdateBook(w http.ResponseWriter, r *http.Request) {
 	}
 	defer connection.Close()
 
-	var book Book
-	queryRowError := connection.QueryRow("SELECT * FROM Book WHERE id = ?", bookId).Scan(&book.ID, &book.Name)
+	var originalEntity Book
+	queryRowError := connection.QueryRow("SELECT * FROM Book WHERE id = ?", bookId).Scan(&originalEntity.ID, &originalEntity.Name)
 	if queryRowError != nil {
 		if queryRowError == sql.ErrNoRows {
 			helpers.ThrowEntityNotFounded(queryRowError.Error(), w, bookId)
@@ -180,6 +181,28 @@ func UpdateBook(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(response)
 		return
 	}
+	var requestBodyBook Book
 
-	json.NewEncoder(w).Encode(book)
+	json.NewDecoder(r.Body).Decode(&requestBodyBook)
+	// INSERT INTO Book (name) VALUES (?)
+	statment, err := connection.Prepare("UPDATE Book SET name = ? WHERE id = ?")
+	if err != nil {
+		helpers.ThrowAStatmentIssue(w, err.Error())
+
+	}
+	e, err := statment.Exec(requestBodyBook.Name, bookId)
+
+	if err != nil {
+		fmt.Println(e)
+		helpers.ThrowAStatmentIssue(w, err.Error())
+	}
+
+	var responseBook Book
+
+	connection.QueryRow("SELECT * FROM Book WHERE id = ?", bookId).Scan(&responseBook.ID, &responseBook.Name)
+	if queryRowError != nil {
+		helpers.ThrowEntityNotFounded(queryRowError.Error(), w, bookId)
+	}
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(responseBook)
 }

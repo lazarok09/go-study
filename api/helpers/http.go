@@ -40,9 +40,13 @@ func ThrowDBConnectionError(w http.ResponseWriter, err error) {
 }
 
 // a function that receives name as being what you wanted to database prepare
-func ThrowAStatmentIssue(name string) {
-	message := fmt.Sprintf("An issue ocurred when you tried to: %s ", name)
-	panic(message)
+func ThrowAStatmentIssue(w http.ResponseWriter, issue string) {
+	status := http.StatusBadRequest
+	w.WriteHeader(status)
+	message := fmt.Sprintf("An issue ocurred when you tried to: %s ", issue)
+	response := ResponseErrorShape{Message: message, Error: issue, Status: status}
+
+	json.NewEncoder(w).Encode(response)
 }
 
 func ThrowEntityNotFounded(errorText string, w http.ResponseWriter, id uint64) {
