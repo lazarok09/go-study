@@ -14,6 +14,7 @@ func main() {
 	router.HandleFunc("/book", controllers.CreateBook).Methods(http.MethodPost)
 	router.HandleFunc("/book", controllers.GetBooks).Methods(http.MethodGet)
 	router.HandleFunc("/book/{id}", controllers.GetBook).Methods(http.MethodGet)
+	router.HandleFunc("/book/{id}", controllers.UpdateBook).Methods(http.MethodPatch)
 
 	fmt.Println("Server listening at port 6000")
 

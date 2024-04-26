@@ -44,3 +44,12 @@ func ThrowAStatmentIssue(name string) {
 	message := fmt.Sprintf("An issue ocurred when you tried to: %s ", name)
 	panic(message)
 }
+
+func ThrowEntityNotFounded(errorText string, w http.ResponseWriter, id uint64) {
+	status := http.StatusNotFound
+	w.WriteHeader(status)
+	message := fmt.Sprintf("Entity with id %d was not founded", id)
+	response := ResponseErrorShape{Message: message, Error: errorText, Status: status}
+	json.NewEncoder(w).Encode(response)
+
+}

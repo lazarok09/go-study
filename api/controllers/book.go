@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"database/sql"
 	"encoding/json"
 
 	"io"
@@ -133,6 +134,46 @@ func GetBook(w http.ResponseWriter, r *http.Request) {
 	var book Book
 	queryRowError := connection.QueryRow("SELECT * FROM Book WHERE id = ?", bookId).Scan(&book.ID, &book.Name)
 	if queryRowError != nil {
+		if queryRowError == sql.ErrNoRows {
+			helpers.ThrowEntityNotFounded(queryRowError.Error(), w, bookId)
+			return
+		}
+		status := http.StatusInternalServerError
+		w.WriteHeader(status)
+		response := helpers.ResponseErrorShape{Message: "An error occurred when scanning book value to the struct", Error: queryRowError.Error(), Status: status}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	json.NewEncoder(w).Encode(book)
+}
+func UpdateBook(w http.ResponseWriter, r *http.Request) {
+
+	params := mux.Vars(r)
+
+	paramName := "id"
+	bookId, err := strconv.ParseUint(params[paramName], 10, 32)
+
+	if err != nil {
+		helpers.ThrowParamMissing(w, paramName)
+		return
+	}
+
+	connection, err := database.Connect()
+	if err != nil {
+		helpers.ThrowDBConnectionError(w, err)
+		return
+	}
+	defer connection.Close()
+
+	var book Book
+	queryRowError := connection.QueryRow("SELECT * FROM Book WHERE id = ?", bookId).Scan(&book.ID, &book.Name)
+	if queryRowError != nil {
+		if queryRowError == sql.ErrNoRows {
+			helpers.ThrowEntityNotFounded(queryRowError.Error(), w, bookId)
+			return
+		}
+
 		status := http.StatusInternalServerError
 		w.WriteHeader(status)
 		response := helpers.ResponseErrorShape{Message: "An error occurred when scanning book value to the struct", Error: queryRowError.Error(), Status: status}
