@@ -30,24 +30,26 @@ func CreateBook(w http.ResponseWriter, r *http.Request) {
 	connection, err := database.Connect()
 	if err != nil {
 		w.Write([]byte("An error ocurred when connecting the database"))
-
+		return
 	}
 	defer connection.Close()
 	var book BookBody
 	requestBody, err := io.ReadAll(r.Body)
 	if err != nil {
 		w.Write([]byte("An error ocurred when reading the body database"))
-
+		return
 	}
 
 	if bookMarshallError := json.Unmarshal(requestBody, &book); bookMarshallError != nil {
 		w.Write([]byte("An error ocurred when parsing the message"))
+		return
 	}
 
 	statment, err := connection.Prepare("INSERT INTO Book (name) VALUES (?)")
 
 	if err != nil {
 		w.Write([]byte("An error ocurred when creating the SQL statment"))
+		return
 	}
 	defer statment.Close()
 

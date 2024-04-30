@@ -19,6 +19,7 @@ func RunUnMarshall() {
 
 	// he is a json
 	carINJSON := `{"color":"blue","name":"palio","year":2012}`
+	
 
 	if error := json.Unmarshal([]byte(carINJSON), &palio); error != nil {
 		log.Fatal("An exception occurred when unmarshall the car", error)
