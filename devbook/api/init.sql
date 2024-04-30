@@ -1,0 +1,16 @@
+CREATE DATABASE IF NOT EXISTS devbook;
+
+GRANT ALL PRIVILEGES ON devbook.* TO 'lazarok09'@'%';
+
+USE devbook;
+
+DROP TABLE IF EXISTS users;
+
+CREATE TABLE users (  -- Use parentheses for column definitions
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(50) NOT NULL,
+  nick VARCHAR(50) NOT NULL UNIQUE,
+  email VARCHAR(50) NOT NULL UNIQUE,
+  password VARCHAR(20) NOT NULL UNIQUE,
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP()
+) ENGINE=INNODB;
