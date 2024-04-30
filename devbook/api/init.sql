@@ -1,12 +1,13 @@
+GRANT ALL PRIVILEGES ON devbook.* TO 'lazarok09'@'%';
+
 CREATE DATABASE IF NOT EXISTS devbook;
 
-GRANT ALL PRIVILEGES ON devbook.* TO 'lazarok09'@'%';
 
 USE devbook;
 
 DROP TABLE IF EXISTS users;
 
-CREATE TABLE users (  -- Use parentheses for column definitions
+CREATE TABLE users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(50) NOT NULL,
   nick VARCHAR(50) NOT NULL UNIQUE,
