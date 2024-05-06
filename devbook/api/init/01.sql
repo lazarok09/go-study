@@ -1,6 +1,6 @@
 CREATE DATABASE IF NOT EXISTS devbook;
 
-GRANT ALL PRIVILEGES ON devbook.* TO 'lazarok09'@'%';
+GRANT ALL PRIVILEGES ON devbook.* TO 'lazarok09'@'localhost';
 
 USE devbook;
 
