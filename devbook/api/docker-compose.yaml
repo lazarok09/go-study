@@ -14,7 +14,7 @@ services:
       - 3306:3306
     volumes:
       - devbook-db-data:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./init:/docker-entrypoint-initdb.d
     networks:
       - mynet
 
@@ -23,3 +23,4 @@ networks:
     driver: "bridge"
 volumes:
   devbook-db-data:
+  init:
