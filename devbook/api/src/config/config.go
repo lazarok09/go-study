@@ -29,6 +29,6 @@ func LoadEnvs() {
 		Port = 9000
 	}
 
-	ConnectionStr = fmt.Sprintf("%s:%s@/%s?charset=utf8&paseTime=True&loc=Local", os.Getenv("MYSQL_USER"), os.Getenv("MYSQL_PASSWORD"), os.Getenv("MYSQL_DATABASE"))
+	ConnectionStr = fmt.Sprintf("%s:%s@/%s?charset=utf8&parseTime=True&loc=Local", os.Getenv("MYSQL_USER"), os.Getenv("MYSQL_PASSWORD"), os.Getenv("MYSQL_DATABASE"))
 
 }
