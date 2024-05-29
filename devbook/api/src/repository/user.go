@@ -17,7 +17,7 @@ func NewUsersRepository(db *sql.DB) *users {
 
 // Create a user in the database and return his id if created
 func (repository users) Create(user models.User) (uint64, error) {
-	statment, err := repository.db.Prepare("INSERT INTO (name, nick, email, password) values(?, ?, ?, ?)")
+	statment, err := repository.db.Prepare("INSERT INTO users (name, nick, email, password) values(?, ?, ?, ?)")
 	if err != nil {
 		return 0, err
 	}
