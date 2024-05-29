@@ -11,7 +11,9 @@ import (
 func main() {
 	config.LoadEnvs()
 
-	fmt.Println("Connection str at: %s", config.ConnectionStr)
+	var loadedAt = fmt.Sprintf("Server loaded at %d", config.Port)
+	fmt.Println(loadedAt)
+
 	r := router.Generate()
 
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", config.Port), r))
