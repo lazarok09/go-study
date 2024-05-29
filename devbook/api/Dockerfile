@@ -10,7 +10,7 @@ COPY . .
 
 RUN go build -o ./bin/devbook ./
 
-EXPOSE 6000
+EXPOSE ${API_PORT}
 
 
 CMD [ "./bin/devbook" ]
