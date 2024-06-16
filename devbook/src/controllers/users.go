@@ -54,8 +54,20 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func SearchUsers(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("MAYBE"))
-
+	nameOrNick := r.URL.Query().Get("name")
+	db, err := database.Connect()
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+	repository := repository.NewUsersRepository(db)
+	users, err := repository.Search(nameOrNick)
+	if err != nil {
+		responses.Error(w, http.StatusBadRequest, err)
+		return
+	}
+	responses.JSON(w, http.StatusAccepted, users)
 }
 func SearchUser(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("MAYBE"))

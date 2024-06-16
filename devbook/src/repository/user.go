@@ -3,6 +3,7 @@ package repository
 import (
 	"api/src/models"
 	"database/sql"
+	"fmt"
 )
 
 // Represents the repository of users
@@ -34,4 +35,37 @@ func (repository users) Create(user models.User) (uint64, error) {
 		return 0, err
 	}
 	return uint64(lastInsertedID), nil
+}
+
+// Search all users based in the name or nick
+func (repository users) Search(nameOrNick string) ([]models.User, error) {
+	// %% = %
+	// string
+	// %% = %
+	// final string = %nameOrNick%
+
+	var searchStr = fmt.Sprintf("%%%s%%", nameOrNick)
+	rows, err := repository.db.Query("SELECT id, name, nick, email, createdAt FROM users WHERE name LIKE ? or nick LIKE ?", searchStr, searchStr)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var users []models.User
+
+	for rows.Next() {
+		var user models.User
+
+		if err = rows.Scan(
+			&user.ID,
+			&user.Name,
+			&user.Nick,
+			&user.Email,
+			&user.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+	return users, err
 }
